@@ -1,5 +1,5 @@
-import { autoCorrect, MAutoCorrect } from '@/models/misc/autocorrect';
-import { HtmlService } from '@/services/misc/html.service';
+import { autoCorrect, MAutoCorrect } from './autocorrect';
+import { HtmlService } from '../../services/misc/html.service';
 
 export class MDictionary {
   ID = 0;

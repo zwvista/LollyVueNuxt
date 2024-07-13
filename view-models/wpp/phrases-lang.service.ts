@@ -1,8 +1,8 @@
-import { LangPhraseService } from '@/services/wpp/lang-phrase.service';
+import { LangPhraseService } from '../../services/wpp/lang-phrase.service';
 import { SettingsService } from '../misc/settings.service';
 import { AppService } from '../misc/app.service';
 import { take } from 'rxjs/operators';
-import { MLangPhrase } from '@/models/wpp/lang-phrase';
+import { MLangPhrase } from '../../models/wpp/lang-phrase';
 import { singleton } from "tsyringe";
 
 @singleton()
