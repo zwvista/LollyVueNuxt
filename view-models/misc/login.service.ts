@@ -1,13 +1,13 @@
 import { UserService } from '@/services/misc/user.service';
 import { MUser } from '@/models/misc/user';
-import { inject, singleton } from "tsyringe";
+import { singleton } from "tsyringe";
 
 @singleton()
 export class LoginService {
 
   item = new MUser();
 
-  constructor(@inject(UserService) private userService: UserService) {
+  constructor(private userService: UserService) {
   }
 
   async login(): Promise<string> {

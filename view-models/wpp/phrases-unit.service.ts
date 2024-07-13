@@ -4,7 +4,7 @@ import { MUnitPhrase } from '@/models/wpp/unit-phrase';
 import { UnitPhraseService } from '@/services/wpp/unit-phrase.service';
 import { take } from 'rxjs/operators';
 import { LangPhraseService } from '@/services/wpp/lang-phrase.service';
-import { inject, singleton } from "tsyringe";
+import { singleton } from "tsyringe";
 
 @singleton()
 export class PhrasesUnitService {
@@ -14,10 +14,10 @@ export class PhrasesUnitService {
   textbookPhrases: MUnitPhrase[] = [];
   textbookPhraseCount = 0;
 
-  constructor(@inject(UnitPhraseService) private unitPhraseService: UnitPhraseService,
-              @inject(LangPhraseService) private langPhraseService: LangPhraseService,
-              @inject(SettingsService) private settingsService: SettingsService,
-              @inject(AppService) private appService: AppService) {
+  constructor(private unitPhraseService: UnitPhraseService,
+              private langPhraseService: LangPhraseService,
+              private settingsService: SettingsService,
+              private appService: AppService) {
   }
 
   async getDataInTextbook(filter: string, filterType: number) {

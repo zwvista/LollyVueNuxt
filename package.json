@@ -22,5 +22,8 @@
     "tsyringe": "^4.8.0",
     "vue": "latest",
     "vuetify-nuxt-module": "^0.14.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.6"
   }
 }
