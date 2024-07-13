@@ -16,6 +16,10 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "nuxt": "^3.12.2",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "speak-tts": "^2.0.8",
+    "tsyringe": "^4.8.0",
     "vue": "latest",
     "vuetify-nuxt-module": "^0.14.1"
   }
