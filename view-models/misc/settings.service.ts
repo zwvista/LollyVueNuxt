@@ -128,7 +128,7 @@ export class SettingsService {
   selectedLang!: MLanguage;
 
   voices: MVoice[] = [];
-  speech = new Speech.default();
+//  speech = new Speech.default();
   selectedVoice: MVoice | null = null;
 
   dictsReference: MDictionary[] = [];
@@ -179,7 +179,7 @@ export class SettingsService {
               private autoCorrectService: AutoCorrectService,
               private voiceService: VoiceService,
               private htmlService: HtmlService) {
-    this.speech.init();
+//    this.speech.init();
   }
 
   private getUSInfo(name: string): MUserSettingInfo {

@@ -29,7 +29,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-main>
-<!--      <NuxtPage />-->
+      <NuxtPage />
     </v-main>
   </v-app>
 </template>
