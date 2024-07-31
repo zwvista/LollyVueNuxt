@@ -41,32 +41,32 @@
     {
       icon: 'fa-bus',
       title: 'Words in Unit',
-      path: '/words-unit',
+      path: '/words/words-unit',
     },
     {
       icon: 'fa-train',
       title: 'Phrases in Unit',
-      path: '/phrases-unit',
+      path: '/phrases/phrases-unit',
     },
     {
       icon: 'fa-car',
       title: 'Words in Textbook',
-      path: '/words-textbook',
+      path: '/words/words-textbook',
     },
     {
       icon: 'fa-taxi',
       title: 'Phrases in Textbook',
-      path: '/phrases-textbook',
+      path: '/phrases/phrases-textbook',
     },
     {
       icon: 'fa-plane',
       title: 'Words in Language',
-      path: '/words-lang',
+      path: '/words/words-lang',
     },
     {
       icon: 'fa-rocket',
       title: 'Phrases in Language',
-      path: '/phrases-lang',
+      path: '/phrases/phrases-lang',
     },
     {
       icon: 'fa-motorcycle',

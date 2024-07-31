@@ -21,6 +21,7 @@
     "speak-tts": "^2.0.8",
     "tsyringe": "^4.8.0",
     "vue": "latest",
+    "vue3-clipboard": "^1.0.0",
     "vuetify-nuxt-module": "^0.14.1"
   },
   "devDependencies": {

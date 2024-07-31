@@ -28,9 +28,13 @@ export default defineNuxtConfig({
   vite: {
     plugins: [typescript()],
   },
-  // https://stackoverflow.com/questions/76130373/nuxt3-how-to-use-rxjs-in-development-mode
   build: {
-    transpile: ['rxjs']
+    transpile: [
+      // https://stackoverflow.com/questions/76130373/nuxt3-how-to-use-rxjs-in-development-mode
+      'rxjs',
+      // https://stackoverflow.com/questions/75728338/fontawesome-6-nuxt-3-could-not-find-one-or-more-icons-prefix-fab-icon
+      '@fortawesome/vue-fontawesome'
+    ]
   },
   imports: {
     dirs: ['models/**', 'view-models/**', 'services/**', 'common/**'],
