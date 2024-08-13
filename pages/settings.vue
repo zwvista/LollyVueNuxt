@@ -1,59 +1,96 @@
 <template>
   <div class="h-100 d-flex align-items-center justify-content-center">
-    <b-container class="w-50" v-if="settingsService.selectedLang">
-      <b-form-group class="mb-2" label="Language:" label-for="lang" label-cols="4" content-cols="8">
-        <b-form-select id="lang" :model-value="settingsService.selectedLang" @update:model-value="onLangChange($event)"
-          :options="settingsService.languages" value-field="" text-field="NAME" />
-      </b-form-group>
-      <b-form-group class="mb-2" label="Voice:" label-for="voice" label-cols="4" content-cols="8">
-        <b-form-select id="voice" :model-value="settingsService.selectedVoice" @update:model-value="onVoiceChange($event)"
-          :options="settingsService.voices" value-field="" text-field="VOICENAME" />
-      </b-form-group>
-      <b-form-group class="mb-2" label="Dictionary(Reference):" label-for="dictReference" label-cols="4" content-cols="8">
-        <b-form-select id="dictReference" :model-value="settingsService.selectedDictReference" @update:model-value="onDictReferenceChange($event)"
-          :options="settingsService.dictsReference" value-field="" text-field="NAME" />
-      </b-form-group>
-      <b-form-group class="mb-2" label="Dictionary(Note):" label-for="dictNote" label-cols="4" content-cols="8">
-        <b-form-select id="dictNote" :model-value="settingsService.selectedDictNote" @update:model-value="onDictNoteChange($event)"
-          :options="settingsService.dictsNote" value-field="" text-field="NAME" />
-      </b-form-group>
-      <b-form-group class="mb-2" label="Dictionary(Translation):" label-for="dictTranslation" label-cols="4" content-cols="8">
-        <b-form-select id="dictTranslation" :model-value="settingsService.selectedDictTranslation" @update:model-value="onDictTranslationChange($event)"
-          :options="settingsService.dictsTranslation" value-field="" text-field="NAME" />
-      </b-form-group>
-      <b-form-group class="mb-2" label="Textbook:" label-for="textbook" label-cols="4" content-cols="8">
-        <b-form-select id="textbook" :model-value="settingsService.selectedTextbook" @update:model-value="onTextbookChange($event)"
-          :options="settingsService.textbooks" value-field="" text-field="NAME" />
-      </b-form-group>
-      <b-form-group class="mb-2" label="Unit:" label-cols="4" content-cols="8">
-        <b-input-group>
-          <b-form-select id="unitFrom" :model-value="settingsService.USUNITFROM" @update:model-value="onUnitFromChange($event)"
-            :options="settingsService.units" text-field="label" />
-          <b-form-select id="partFrom" :disabled="toTypeIsUnit" :model-value="settingsService.USPARTFROM" @update:model-value="onPartFromChange($event)"
-            :options="settingsService.parts" text-field="label" />
-        </b-input-group>
-      </b-form-group>
-      <b-row class="mb-2">
-        <b-col cols="4">
-          <b-form-select id="toType" :model-value="settingsService.toType" @update:model-value="onToTypeChange($event)"
-             :options="settingsService.toTypes" text-field="label" />
-        </b-col>
-        <b-col cols="8">
-          <b-input-group>
-            <b-form-select id="unitTo" :disabled="!toTypeIsTo" :model-value="settingsService.USUNITTO" @update:model-value="onUnitToChange($event)"
-              :options="settingsService.units" text-field="label" />
-            <b-form-select id="partTo" :disabled="!toTypeIsTo" :model-value="settingsService.USPARTTO" @update:model-value="onPartToChange($event)"
-              :options="settingsService.parts" text-field="label" />
-          </b-input-group>
-        </b-col>
-      </b-row>
-      <b-form-group class="mb-2" label-cols="4" content-cols="8">
-        <b-button-group>
-          <button class="btn btn-primary mr-2" :disabled="toTypeIsTo" @click="previousUnitPart()">Previous</button>
-          <button class="btn btn-primary mr-2" :disabled="toTypeIsTo" @click="nextUnitPart()">Next</button>
-        </b-button-group>
-      </b-form-group>
-    </b-container>
+    <v-container class="w-50" v-if="settingsService.selectedLang">
+      <v-row>
+        <v-col cols="4">
+          <label for="lang">Language:</label>
+        </v-col>
+        <v-col cols="8">
+          <v-select id="lang" :model-value="settingsService.selectedLang" @update:model-value="onLangChange($event)"
+                    :items="settingsService.languages" :return-object="true" item-title="NAME" />
+        </v-col>
+      </v-row>
+      <v-row class="mt-n10">
+        <v-col cols="4">
+          <label for="voice">Voice:</label>
+        </v-col>
+        <v-col cols="8">
+          <v-select id="voice" :model-value="settingsService.selectedVoice" @update:model-value="onVoiceChange($event)"
+                    :items="settingsService.voices" :return-object="true" item-title="VOICENAME" />
+        </v-col>
+      </v-row>
+      <v-row class="mt-n10">
+        <v-col cols="4">
+          <label for="dictReference">Dictionary(Reference):</label>
+        </v-col>
+        <v-col cols="8">
+          <v-select id="dictReference" :model-value="settingsService.selectedDictReference" @update:model-value="onDictReferenceChange($event)"
+                    :items="settingsService.dictsReference" :return-object="true" item-title="NAME" />
+        </v-col>
+      </v-row>
+      <v-row class="mt-n10">
+        <v-col cols="4">
+          <label for="dictNote">Dictionary(Note):</label>
+        </v-col>
+        <v-col cols="8">
+          <v-select id="dictNote" :model-value="settingsService.selectedDictNote" @update:model-value="onDictNoteChange($event)"
+                    :items="settingsService.dictsNote" :return-object="true" item-title="NAME" />
+        </v-col>
+      </v-row>
+      <v-row class="mt-n10">
+        <v-col cols="4">
+          <label for="dictTranslation">Dictionary(Translation):</label>
+        </v-col>
+        <v-col cols="8">
+          <v-select id="dictTranslation" :model-value="settingsService.selectedDictTranslation" @update:model-value="onDictTranslationChange($event)"
+                    :items="settingsService.dictsTranslation" :return-object="true" item-title="NAME" />
+        </v-col>
+      </v-row>
+      <v-row class="mt-n10">
+        <v-col cols="4">
+          <label for="textbook">Textbook:</label>
+        </v-col>
+        <v-col cols="8">
+          <v-select id="textbook" :model-value="settingsService.selectedTextbook" @update:model-value="onTextbookChange($event)"
+                    :items="settingsService.textbooks" :return-object="true" item-title="NAME" />
+        </v-col>
+      </v-row>
+      <v-row class="mt-n10">
+        <v-col cols="4">
+          <label>Unit:</label>
+        </v-col>
+        <v-col cols="4">
+          <v-select id="unitFrom" :model-value="settingsService.USUNITFROM" @update:model-value="onUnitFromChange($event)"
+                    :items="settingsService.units" item-title="label" />
+        </v-col>
+        <v-col cols="4">
+          <v-select id="partFrom" :disabled="toTypeIsUnit" :model-value="settingsService.USPARTFROM" @update:model-value="onPartFromChange($event)"
+                    :items="settingsService.parts" item-title="label" />
+        </v-col>
+      </v-row>
+      <v-row class="mt-n10">
+        <v-col cols="4">
+          <v-select id="toType" :model-value="settingsService.toType" @update:model-value="onToTypeChange($event)"
+                    :items="settingsService.toTypes" item-title="label" />
+        </v-col>
+        <v-col cols="4">
+          <v-select id="unitTo" :disabled="!toTypeIsTo" :model-value="settingsService.USUNITTO" @update:model-value="onUnitToChange($event)"
+                    :items="settingsService.units" item-title="label" />
+        </v-col>
+        <v-col cols="4">
+          <v-select id="partTo" :disabled="!toTypeIsTo" :model-value="settingsService.USPARTTO" @update:model-value="onPartToChange($event)"
+                    :items="settingsService.parts" item-title="label" />
+        </v-col>
+      </v-row>
+      <v-row class="mt-n10">
+        <v-col cols="4">
+        </v-col>
+        <v-col>
+          <v-btn class="btn btn-primary mr-2" :disabled="toTypeIsTo" @click="previousUnitPart()">Previous</v-btn>
+          <v-btn class="btn btn-primary mr-2" :disabled="toTypeIsTo" @click="nextUnitPart()">Next</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
