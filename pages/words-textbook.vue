@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-toolbar>
-      <v-select :items="settingsService.wordFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh"></v-select>
-      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh"></v-text-field>
-      <v-select :items="settingsService.textbookFilters" item-title="label" v-model="textbookFilter" @update:modelValue="onRefresh"></v-select>
+      <v-select :items="settingsService.wordFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh" />
+      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh" />
+      <v-select :items="settingsService.textbookFilters" item-title="label" v-model="textbookFilter" @update:modelValue="onRefresh" />
       <v-btn variant="elevated" prepend-icon="fa-refresh" color="info">Refresh</v-btn>
 <!--      <router-link to="/words-dict/textbook/0">-->
         <v-btn variant="elevated" prepend-icon="fa-book" color="info" @click="onRefresh()">Dictionary</v-btn>
@@ -18,7 +18,7 @@
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
-          ></v-select>
+           />
         </v-col>
         <v-pagination
           v-model="page"
@@ -42,13 +42,11 @@
             <v-btn v-bind="props" icon="fa-trash" color="error" @click="deleteWord(item)"></v-btn>
           </template>
         </v-tooltip>
-<!--        <router-link :to="{ name: 'words-textbook-detail', params: { id: item.ID }}">-->
-          <v-tooltip text="Edit" location="top">
-            <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" icon="fa-edit" color="info"></v-btn>
-            </template>
-          </v-tooltip>
-<!--        </router-link>-->
+        <v-tooltip text="Edit" location="top">
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" icon="fa-edit" color="info" @click.stop="showDetailDialog(item.ID)"></v-btn>
+          </template>
+        </v-tooltip>
         <v-tooltip text="Speak" location="top">
           <template v-slot:activator="{ props }">
             <v-btn v-bind="props" icon="fa-volume-up" color="info" @click="settingsService.speak(item.WORD)" v-show="settingsService.selectedVoice"></v-btn>
@@ -83,7 +81,7 @@
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
-          ></v-select>
+           />
         </v-col>
         <v-pagination
           v-model="page"
@@ -93,15 +91,19 @@
         ></v-pagination>
       </v-row>
     </div>
+    <WordsTextbookDetail v-if="showDetail" v-model="showDetail" :id="detailId"></WordsTextbookDetail>
   </div>
 </template>
 
 <script setup lang="ts">
+
   import { container } from 'tsyringe';
 
   const appService = ref(container.resolve(AppService));
   const wordsUnitService = ref(container.resolve(WordsUnitService));
   const settingsService = ref(container.resolve(SettingsService));
+  const showDetail = ref(false);
+  const detailId = ref(0);
 
   const headers = ref([
     { title: 'ID', sortable: false, key: 'ID' },
@@ -122,36 +124,40 @@
   const filterType = ref(0);
   const textbookFilter = ref(0);
 
-  (() => {
-    appService.value.initializeObject.subscribe(async _ => {
-      rows.value = settingsService.value.USROWSPERPAGE;
-      await onRefresh();
-    });
-  })();
-
-  async function rowsChange(rows: number) {
-    page.value = 1;
-    await onRefresh();
-  }
-
-  async function onRefresh() {
+  const onRefresh = async () => {
     // https://stackoverflow.com/questions/4228356/integer-division-with-remainder-in-javascript
     await wordsUnitService.value.getDataInLang(page.value, rows.value, filter.value, filterType.value, textbookFilter.value);
     pageCount.value = (wordsUnitService.value.textbookWordCount + rows.value - 1) / rows.value >> 0;
-  }
+  };
 
-  async function deleteWord(item: MUnitWord) {
+  (async () => {
+    await appService.value.getData();
+    rows.value = settingsService.value.USROWSPERPAGE;
+    await onRefresh();
+  })();
+
+  const rowsChange = async (rows: number) => {
+    page.value = 1;
+    await onRefresh();
+  };
+
+  const deleteWord = async (item: MUnitWord) => {
     await wordsUnitService.value.delete(item);
-  }
+  };
 
-  async function getNote(index: number) {
+  const getNote = async (index: number) => {
     console.log(index);
     await wordsUnitService.value.getNote(index);
-  }
+  };
 
-  function googleWord(word: string) {
+  const googleWord = (word: string) => {
     googleString(word);
-  }
+  };
+
+  const showDetailDialog = (id: number) => {
+    detailId.value = id;
+    showDetail.value = true;
+  };
 </script>
 
 <style>

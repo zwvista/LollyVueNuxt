@@ -1,11 +1,9 @@
 <template>
   <div>
     <v-toolbar>
-      <v-select :items="settingsService.phraseFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh"></v-select>
-      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh"></v-text-field>
-<!--      <router-link to="/phrases-unit-detail/0">-->
-        <v-btn variant="elevated" prepend-icon="fa-plus" color="info">Add</v-btn>
-<!--      </router-link>-->
+      <v-select :items="settingsService.phraseFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh" />
+      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh" />
+      <v-btn variant="elevated" prepend-icon="fa-plus" color="info" @click.stop="showDetailDialog(0)">Add</v-btn>
       <v-btn variant="elevated" prepend-icon="fa-refresh" color="info" @click="onRefresh()">Refresh</v-btn>
     </v-toolbar>
     <v-data-table
@@ -26,13 +24,11 @@
             <v-btn v-bind="props" icon="fa-trash" color="error" @click="deletePhrase(item)"></v-btn>
           </template>
         </v-tooltip>
-<!--        <router-link :to="{ name: 'phrases-unit-detail', params: { id: item.ID }}">-->
-          <v-tooltip text="Edit" location="top">
-            <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" icon="fa-edit" color="info"></v-btn>
-            </template>
-          </v-tooltip>
-<!--        </router-link>-->
+        <v-tooltip text="Edit" location="top">
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" icon="fa-edit" color="info" @click.stop="showDetailDialog(item.ID)"></v-btn>
+          </template>
+        </v-tooltip>
         <v-tooltip text="Speak" location="top">
           <template v-slot:activator="{ props }">
             <v-btn v-bind="props" icon="fa-volume-up" color="info" @click="settingsService.speak(item.PHRASE)" v-show="settingsService.selectedVoice"></v-btn>
@@ -52,16 +48,20 @@
         </v-tooltip>
       </template>
     </v-data-table>
+    <PhrasesUnitDetail v-if="showDetail" v-model="showDetail" :id="detailId"></PhrasesUnitDetail>
   </div>
 </template>
 
 <script setup lang="ts">
+
   // import Sortable from 'sortablejs';
   import { container } from 'tsyringe';
 
   const appService = ref(container.resolve(AppService));
   const phrasesUnitService = ref(container.resolve(PhrasesUnitService));
   const settingsService = ref(container.resolve(SettingsService));
+  const showDetail = ref(false);
+  const detailId = ref(0);
 
   const headers = ref([
     { title: '', sortable: false, key: 'DD' },
@@ -77,10 +77,13 @@
   const filter = ref('');
   const filterType = ref(0);
 
-  (() => {
-    appService.value.initializeObject.subscribe(async _ => {
-      await onRefresh();
-    });
+  const onRefresh = async () => {
+    await phrasesUnitService.value.getDataInTextbook(filter.value, filterType.value);
+  };
+
+  (async () => {
+    await appService.value.getData();
+    await onRefresh();
   })();
 
   const expandRow = ref(null);
@@ -98,7 +101,7 @@
     // );
   });
 
-  function dragStart({item}: any) {
+  const dragStart = ({item}: any) => {
     const nextSib = item.nextSibling;
     if (nextSib &&
       nextSib.classList.contains('datatable__expand-row')) {
@@ -106,9 +109,9 @@
     } else {
       expandRow.value = null;
     }
-  }
+  };
 
-  function dragReorder({item, oldIndex, newIndex}: any) {
+  const dragReorder = ({item, oldIndex, newIndex}: any) => {
     console.log('reorder', item, oldIndex, newIndex);
     const nextSib = item.nextSibling;
     if (nextSib &&
@@ -119,19 +122,20 @@
     const movedItem = phrasesUnitService.value.unitPhrases.splice(oldIndex, 1)[0];
     phrasesUnitService.value.unitPhrases.splice(newIndex, 0, movedItem);
     phrasesUnitService.value.reindex(index => {});
-  }
+  };
 
-  async function onRefresh() {
-    await phrasesUnitService.value.getDataInTextbook(filter.value, filterType.value);
-  }
+  const deletePhrase = async (item: MUnitPhrase) => {
+    await phrasesUnitService.value.delete(item);
+  };
 
-  function deletePhrase(item: MUnitPhrase) {
-    phrasesUnitService.value.delete(item);
-  }
-
-  function googlePhrase(phrase: string) {
+  const googlePhrase = (phrase: string) => {
     googleString(phrase);
-  }
+  };
+
+  const showDetailDialog = (id: number) => {
+    detailId.value = id;
+    showDetail.value = true;
+  };
 </script>
 
 <style>

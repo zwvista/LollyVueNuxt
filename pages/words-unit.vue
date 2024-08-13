@@ -1,17 +1,15 @@
 <template>
   <div>
     <v-toolbar>
-      <v-text-field label="New Word" type="text" v-model="newWord" @keyup.enter="onEnterNewWord"></v-text-field>
+      <v-text-field label="New Word" type="text" v-model="newWord" @keyup.enter="onEnterNewWord" />
       <v-tooltip text="Speak" location="top">
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props" icon="fa-volume-up" color="info" @click="settingsService.speak(newWord)" v-show="settingsService.selectedVoice"></v-btn>
         </template>
       </v-tooltip>
-      <v-select :items="settingsService.wordFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh"></v-select>
-      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh"></v-text-field>
-<!--      <router-link to="/words-unit-detail/0">-->
-        <v-btn variant="elevated" prepend-icon="fa-plus" color="info">Add</v-btn>
-<!--      </router-link>-->
+      <v-select :items="settingsService.wordFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh" />
+      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh" />
+      <v-btn variant="elevated" prepend-icon="fa-plus" color="info" @click.stop="showDetailDialog(0)">Add</v-btn>
       <v-btn variant="elevated" prepend-icon="fa-refresh" color="info" @click="onRefresh()">Refresh</v-btn>
       <v-btn variant="elevated" v-show="settingsService.selectedDictNote" color="warning">Retrieve All Notes</v-btn>
       <v-btn variant="elevated" v-show="settingsService.selectedDictNote" color="warning">Retrieve Notes If Empty</v-btn>
@@ -37,13 +35,11 @@
             <v-btn v-bind="props" icon="fa-trash" color="error" @click="deleteWord(item)"></v-btn>
           </template>
         </v-tooltip>
-<!--        <router-link :to="{ name: 'words-unit-detail', params: { id: item.ID }}">-->
-          <v-tooltip text="Edit" location="top">
-            <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" icon="fa-edit" color="info"></v-btn>
-            </template>
-          </v-tooltip>
-<!--        </router-link>-->
+        <v-tooltip text="Edit" location="top">
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" icon="fa-edit" color="info" @click.stop="showDetailDialog(item.ID)"></v-btn>
+          </template>
+        </v-tooltip>
         <v-tooltip text="Speak" location="top">
           <template v-slot:activator="{ props }">
             <v-btn v-bind="props" icon="fa-volume-up" color="info" @click="settingsService.speak(item.WORD)" v-show="settingsService.selectedVoice"></v-btn>
@@ -69,16 +65,20 @@
         <v-btn v-show="settingsService.selectedDictNote" color="warning" @click="getNote(index)">Retrieve Note</v-btn>
       </template>
     </v-data-table>
+    <WordsUnitDetail v-if="showDetail" v-model="showDetail" :id="detailId"></WordsUnitDetail>
   </div>
 </template>
 
 <script setup lang="ts">
 
+  // import Sortable from 'sortablejs';
   import { container } from 'tsyringe';
 
   const appService = ref(container.resolve(AppService));
   const wordsUnitService = ref(container.resolve(WordsUnitService));
   const settingsService = ref(container.resolve(SettingsService));
+  const showDetail = ref(false);
+  const detailId = ref(0);
 
   const headers = ref([
     { title: '', sortable: false, key: 'DD' },
@@ -96,10 +96,13 @@
   const filter = ref('');
   const filterType = ref(0);
 
-  (() => {
-    appService.value.initializeObject.subscribe(async _ => {
-      await onRefresh();
-    });
+  const onRefresh = async () => {
+    await wordsUnitService.value.getDataInTextbook(filter.value, filterType.value);
+  };
+
+  (async () => {
+    await appService.value.getData();
+    await onRefresh();
   })();
 
   const expandRow = ref(null);
@@ -117,7 +120,7 @@
     // );
   });
 
-  function dragStart({item}: any) {
+  const dragStart = ({item}: any) => {
     const nextSib = item.nextSibling;
     if (nextSib &&
       nextSib.classList.contains('datatable__expand-row')) {
@@ -125,9 +128,9 @@
     } else {
       expandRow.value = null;
     }
-  }
+  };
 
-  function dragReorder({item, oldIndex, newIndex}: any) {
+  const dragReorder = ({item, oldIndex, newIndex}: any) => {
     console.log('reorder', item, oldIndex, newIndex);
     const nextSib = item.nextSibling;
     if (nextSib &&
@@ -138,9 +141,9 @@
     const movedItem = wordsUnitService.value.unitWords.splice(oldIndex, 1)[0];
     wordsUnitService.value.unitWords.splice(newIndex, 0, movedItem);
     wordsUnitService.value.reindex(index => {});
-  }
+  };
 
-  async function onEnterNewWord() {
+  const onEnterNewWord = async () => {
     if (!newWord.value) return;
     const o = wordsUnitService.value.newUnitWord();
     o.WORD = settingsService.value.autoCorrectInput(newWord.value);
@@ -148,28 +151,29 @@
     const id = await wordsUnitService.value.create(o);
     o.ID = id as number;
     wordsUnitService.value.unitWords.push(o);
-  }
+  };
 
-  async function onRefresh() {
-    await wordsUnitService.value.getDataInTextbook(filter.value, filterType.value);
-  }
-
-  async function deleteWord(item: MUnitWord) {
+  const deleteWord = async (item: MUnitWord) => {
     await wordsUnitService.value.delete(item);
-  }
+  };
 
-  async function getNote(index: number) {
+  const getNote = async (index: number) => {
     console.log(index);
     await wordsUnitService.value.getNote(index);
-  }
+  };
 
-  function googleWord(word: string) {
+  const googleWord = (word: string) => {
     googleString(word);
-  }
+  };
 
-  function getNotes(ifEmpty: boolean) {
+  const getNotes = (ifEmpty: boolean) => {
     wordsUnitService.value.getNotes(ifEmpty, () => {}, () => {});
-  }
+  };
+
+  const showDetailDialog = (id: number) => {
+    detailId.value = id;
+    showDetail.value = true;
+  };
 </script>
 
 <style>

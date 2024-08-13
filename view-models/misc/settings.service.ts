@@ -17,7 +17,7 @@ import { MVoice } from '../../models/misc/voice';
 import { UsMappingService } from '../../services/misc/us-mapping.service';
 import { MUSMapping } from '../../models/misc/usmapping';
 import { HtmlService } from '../../services/misc/html.service';
-import { singleton } from "tsyringe";
+import { singleton } from 'tsyringe';
 
 @singleton()
 export class SettingsService {
@@ -128,7 +128,7 @@ export class SettingsService {
   selectedLang!: MLanguage;
 
   voices: MVoice[] = [];
-//  speech = new Speech.default();
+  speech = new Speech.default();
   selectedVoice: MVoice | null = null;
 
   dictsReference: MDictionary[] = [];
@@ -179,7 +179,7 @@ export class SettingsService {
               private autoCorrectService: AutoCorrectService,
               private voiceService: VoiceService,
               private htmlService: HtmlService) {
-//    this.speech.init();
+    this.speech.init();
   }
 
   private getUSInfo(name: string): MUserSettingInfo {

@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-toolbar>
-      <v-select :items="settingsService.phraseFilterTypes" item-title="label" item-value="value" v-model="filterType" @update:modelValue="onRefresh"></v-select>
-      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh"></v-text-field>
-      <v-select :items="settingsService.textbookFilters" item-title="label" item-value="value" v-model="textbookFilter" @update:modelValue="onRefresh"></v-select>
+      <v-select :items="settingsService.phraseFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh" />
+      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh" />
+      <v-select :items="settingsService.textbookFilters" item-title="label" v-model="textbookFilter" @update:modelValue="onRefresh" />
       <v-btn variant="elevated" prepend-icon="fa-refresh" color="info" @click="onRefresh()">Refresh</v-btn>
     </v-toolbar>
     <div class="text-xs-center">
@@ -15,7 +15,7 @@
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
-          ></v-select>
+           />
         </v-col>
         <v-pagination
           v-model="page"
@@ -39,13 +39,11 @@
             <v-btn v-bind="props" icon="fa-trash" color="error" @click="deletePhrase(item)"></v-btn>
           </template>
         </v-tooltip>
-<!--        <router-link :to="{ name: 'phrases-textbook-detail', params: { id: item.ID }}">-->
-          <v-tooltip text="Edit" location="top">
-            <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" icon="fa-edit" color="info"></v-btn>
-            </template>
-          </v-tooltip>
-<!--        </router-link>-->
+        <v-tooltip text="Edit" location="top">
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" icon="fa-edit" color="info" @click.stop="showDetailDialog(item.ID)"></v-btn>
+          </template>
+        </v-tooltip>
         <v-tooltip text="Speak" location="top">
           <template v-slot:activator="{ props }">
             <v-btn v-bind="props" icon="fa-volume-up" color="info" @click="settingsService.speak(item.PHRASE)" v-show="settingsService.selectedVoice"></v-btn>
@@ -72,7 +70,7 @@
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
-          ></v-select>
+           />
         </v-col>
         <v-pagination
           v-model="page"
@@ -82,15 +80,19 @@
         ></v-pagination>
       </v-row>
     </div>
+    <PhrasesTextbookDetail v-if="showDetail" v-model="showDetail" :id="detailId"></PhrasesTextbookDetail>
   </div>
 </template>
 
 <script setup lang="ts">
+
   import { container } from 'tsyringe';
 
   const appService = ref(container.resolve(AppService));
   const phrasesUnitService = ref(container.resolve(PhrasesUnitService));
   const settingsService = ref(container.resolve(SettingsService));
+  const showDetail = ref(false);
+  const detailId = ref(0);
 
   const headers = ref([
     { title: 'ID', sortable: false, key: 'ID' },
@@ -110,31 +112,35 @@
   const filterType = ref(0);
   const textbookFilter = ref(0);
 
-  (() => {
-    appService.value.initializeObject.subscribe(_ => {
-      rows.value = settingsService.value.USROWSPERPAGE;
-      onRefresh();
-    });
-  })();
-
-  async function rowsChange(rows: number) {
-    page.value = 1;
-    await onRefresh();
-  }
-
-  async function onRefresh() {
+  const onRefresh = async () => {
     // https://stackoverflow.com/questions/4228356/integer-division-with-remainder-in-javascript
     await phrasesUnitService.value.getDataInLang(page.value, rows.value, filter.value, filterType.value, textbookFilter.value);
     pageCount.value = (phrasesUnitService.value.textbookPhraseCount + rows.value - 1) / rows.value >> 0;
-  }
+  };
 
-  function deletePhrase(item: MUnitPhrase) {
-    phrasesUnitService.value.delete(item);
-  }
+  (async () => {
+    await appService.value.getData();
+    rows.value = settingsService.value.USROWSPERPAGE;
+    await onRefresh();
+  })();
 
-  function googlePhrase(phrase: string) {
+  const rowsChange = async (rows: number) => {
+    page.value = 1;
+    await onRefresh();
+  };
+
+  const deletePhrase = async (item: MUnitPhrase) => {
+    await phrasesUnitService.value.delete(item);
+  };
+
+  const googlePhrase = (phrase: string) => {
     googleString(phrase);
-  }
+  };
+
+  const showDetailDialog = (id: number) => {
+    detailId.value = id;
+    showDetail.value = true;
+  };
 </script>
 
 <style>
