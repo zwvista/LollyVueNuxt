@@ -5,6 +5,9 @@ import typescript from '@rollup/plugin-typescript'
 
 // Modify the `nuxt.config.ts` file by adding to the `export default defineNuxtConfig()`
 export default defineNuxtConfig({
+  devServer: {
+    port: 3600
+  },
   devtools: { enabled: true },
   modules: ["vuetify-nuxt-module"],
   vuetify: {
