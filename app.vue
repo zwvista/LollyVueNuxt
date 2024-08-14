@@ -80,5 +80,5 @@
     },
   ]);
   const rail = ref(false);
-  const title = ref('Lolly Vue');
+  const title = ref('Lolly Vue Nuxt');
 </script>
