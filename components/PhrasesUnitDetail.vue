@@ -20,7 +20,6 @@
 <script setup lang="ts">
   import { PhrasesUnitService } from '@/view-models/wpp/phrases-unit.service';
   import { SettingsService } from '@/view-models/misc/settings.service';
-  import { container } from 'tsyringe';
   import { defineModel, defineProps, ref } from "vue";
   import { MUnitPhrase } from '@/models/wpp/unit-phrase';
 

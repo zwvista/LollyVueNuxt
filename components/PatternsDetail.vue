@@ -17,7 +17,6 @@
 <script setup lang="ts">
   import { SettingsService } from '@/view-models/misc/settings.service';
   import { PatternsService } from '@/view-models/wpp/patterns.service';
-  import { container } from 'tsyringe';
   import { defineModel, defineProps, ref } from "vue";
   import { MPattern } from '@/models/wpp/pattern';
 

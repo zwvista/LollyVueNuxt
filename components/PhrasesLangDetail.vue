@@ -16,7 +16,6 @@
 <script setup lang="ts">
   import { PhrasesLangService } from '@/view-models/wpp/phrases-lang.service';
   import { SettingsService } from '@/view-models/misc/settings.service';
-  import { container } from 'tsyringe';
   import { defineModel, defineProps, ref } from "vue";
   import { MLangPhrase } from '@/models/wpp/lang-phrase';
 

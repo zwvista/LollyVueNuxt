@@ -14,7 +14,9 @@ export default defineNuxtConfig({
         svg: {
           fa: {
             libraries: [
-              [/* default export? */false, /* export name */ 'fas', /* library */ '@fortawesome/free-solid-svg-icons']
+              [/* default export? */false, /* export name */ 'fas', /* library */ '@fortawesome/free-solid-svg-icons'],
+              [/* default export? */false, /* export name */ 'far', /* library */ '@fortawesome/free-regular-svg-icons'],
+              [/* default export? */false, /* export name */ 'fab', /* library */ '@fortawesome/free-brands-svg-icons'],
             ]
           }
         }
@@ -38,5 +40,11 @@ export default defineNuxtConfig({
   },
   imports: {
     dirs: ['models/**', 'view-models/**', 'services/**', 'common/**'],
+    presets: [
+      {
+        from: 'tsyringe',
+        imports: ['container']
+      }
+    ]
   },
 })

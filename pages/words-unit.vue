@@ -70,9 +70,7 @@
 </template>
 
 <script setup lang="ts">
-
   // import Sortable from 'sortablejs';
-  import { container } from 'tsyringe';
 
   const appService = ref(container.resolve(AppService));
   const wordsUnitService = ref(container.resolve(WordsUnitService));

@@ -21,7 +21,6 @@
   import { SettingsService } from '@/view-models/misc/settings.service';
   import { MUnitPhrase } from '@/models/wpp/unit-phrase';
   import { PhrasesUnitService } from '@/view-models/wpp/phrases-unit.service';
-  import { container } from 'tsyringe';
   import { defineModel, defineProps, ref } from "vue";
 
   const phrasesUnitService = ref(container.resolve(PhrasesUnitService));

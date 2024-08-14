@@ -96,9 +96,6 @@
 </template>
 
 <script setup lang="ts">
-
-  import { container } from 'tsyringe';
-
   const appService = ref(container.resolve(AppService));
   const wordsUnitService = ref(container.resolve(WordsUnitService));
   const settingsService = ref(container.resolve(SettingsService));

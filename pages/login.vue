@@ -7,9 +7,6 @@
 </template>
 
 <script setup lang="ts">
-  import { container } from 'tsyringe';
-  import { useCookie } from "nuxt/app";
-
   const loginService = ref(container.resolve(LoginService));
   const loggedIn = useCookie('userid');
 

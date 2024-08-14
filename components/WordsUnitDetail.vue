@@ -21,7 +21,6 @@
 <script setup lang="ts">
   import { WordsUnitService } from '@/view-models/wpp/words-unit.service';
   import { SettingsService } from '@/view-models/misc/settings.service';
-  import { container } from 'tsyringe';
   import { defineModel, defineProps, ref } from "vue";
   import { MUnitWord } from "@/models/wpp/unit-word";
 
