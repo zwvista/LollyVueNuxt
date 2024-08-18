@@ -69,7 +69,8 @@
             </template>
           </v-tooltip>
 <!--        </router-link>-->
-        <v-btn v-show="settingsService.selectedDictNote" color="warning" @click="getNote(index)">Retrieve Note</v-btn>
+        <v-btn v-show="settingsService.selectedDictNote" color="warning" @click="getNote(item)">Get Note</v-btn>
+        <v-btn v-show="settingsService.selectedDictNote" color="warning" @click="clearNote(item)">Clear Note</v-btn>
       </template>
     </v-data-table>
     <div class="text-xs-center">
@@ -142,9 +143,12 @@
     await wordsUnitService.value.delete(item);
   };
 
-  const getNote = async (index: number) => {
-    console.log(index);
-    await wordsUnitService.value.getNote(index);
+  const getNote = async (item: MUnitWord) => {
+    await wordsUnitService.value.getNote(item);
+  };
+
+  const clearNote = async (item: MUnitWord) => {
+    await wordsUnitService.value.clearNote(item);
   };
 
   const googleWord = (word: string) => {
