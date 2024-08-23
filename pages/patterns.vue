@@ -94,8 +94,9 @@
   const headers = ref([
     { title: 'ID', sortable: false, key: 'ID' },
     { title: 'PATTERN', sortable: false, key: 'PATTERN' },
-    { title: 'NOTE', sortable: false, key: 'NOTE' },
     { title: 'TAGS', sortable: false, key: 'TAGS' },
+    { title: 'TITLE', sortable: false, key: 'TITLE' },
+    { title: 'URL', sortable: false, key: 'URL' },
     { title: 'ACTIONS', sortable: false, key: 'ACTIONS' },
   ]);
   const page = ref(1);
