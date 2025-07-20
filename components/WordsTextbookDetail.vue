@@ -21,10 +21,10 @@
 </template>
 
 <script setup lang="ts">
-  import { SettingsService } from '@/view-models/misc/settings.service';
-  import { WordsUnitService } from '@/view-models/wpp/words-unit.service';
+  import { SettingsService } from '@/shared/view-models/misc/settings.service';
+  import { WordsUnitService } from '@/shared/view-models/wpp/words-unit.service';
   import { defineModel, defineProps, ref } from "vue";
-  import { MUnitWord } from "@/models/wpp/unit-word";
+  import { MUnitWord } from "@/shared/models/wpp/unit-word";
 
   const wordsUnitService = ref(container.resolve(WordsUnitService));
   const settingsService = ref(container.resolve(SettingsService));

@@ -14,10 +14,10 @@
 </template>
 
 <script setup lang="ts">
-  import { PhrasesLangService } from '@/view-models/wpp/phrases-lang.service';
-  import { SettingsService } from '@/view-models/misc/settings.service';
+  import { PhrasesLangService } from '@/shared/view-models/wpp/phrases-lang.service';
+  import { SettingsService } from '@/shared/view-models/misc/settings.service';
   import { defineModel, defineProps, ref } from "vue";
-  import { MLangPhrase } from '@/models/wpp/lang-phrase';
+  import { MLangPhrase } from '@/shared/models/wpp/lang-phrase';
 
   const phrasesLangService = ref(container.resolve(PhrasesLangService));
   const settingsService = ref(container.resolve(SettingsService));

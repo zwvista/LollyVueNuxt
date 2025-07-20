@@ -42,7 +42,7 @@ export default defineNuxtConfig({
     ]
   },
   imports: {
-    dirs: ['models/**', 'view-models/**', 'services/**', 'common/**'],
+    dirs: ['shared/**'],
     presets: [
       {
         from: 'tsyringe',

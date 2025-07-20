@@ -16,10 +16,10 @@
 </template>
 
 <script setup lang="ts">
-  import { WordsLangService } from '@/view-models/wpp/words-lang.service';
-  import { SettingsService } from '@/view-models/misc/settings.service';
+  import { WordsLangService } from '@/shared/view-models/wpp/words-lang.service';
+  import { SettingsService } from '@/shared/view-models/misc/settings.service';
   import { defineModel, defineProps, ref } from "vue";
-  import { MLangWord } from "@/models/wpp/lang-word";
+  import { MLangWord } from "@/shared/models/wpp/lang-word";
 
   const wordsLangService = ref(container.resolve(WordsLangService));
   const settingsService = ref(container.resolve(SettingsService));
