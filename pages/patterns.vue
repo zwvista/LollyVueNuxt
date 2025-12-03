@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-toolbar>
-      <v-select :items="settingsService.patternFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh" />
-      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh" />
+      <v-select :items="settingsService.patternFilterTypes" item-title="label" v-model="patternsService.filterType" @update:modelValue="onRefresh" />
+      <v-text-field label="Filter" type="text" v-model="patternsService.filter" @keyup.enter="onRefresh" />
       <v-btn variant="elevated" prepend-icon="fa-plus" color="info" @click.stop="showDetailDialog(0)">Add</v-btn>
       <v-btn variant="elevated" prepend-icon="fa-refresh" color="info" @click="onRefresh()">Refresh</v-btn>
     </v-toolbar>
@@ -11,14 +11,14 @@
         <v-col cols="12" md="3">
           <v-select
             :items="settingsService.USROWSPERPAGEOPTIONS"
-            v-model="rows"
+            v-model="patternsService.rows"
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
            />
         </v-col>
         <v-pagination
-          v-model="page"
+          v-model="patternsService.page"
           :length="pageCount"
           :total-visible="20"
           @update:modelValue="onRefresh"
@@ -66,14 +66,14 @@
         <v-col cols="12" md="3">
           <v-select
             :items="settingsService.USROWSPERPAGEOPTIONS"
-            v-model="rows"
+            v-model="patternsService.rows"
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
            />
         </v-col>
         <v-pagination
-          v-model="page"
+          v-model="patternsService.page"
           :length="pageCount"
           :total-visible="20"
           @update:modelValue="onRefresh"
@@ -99,26 +99,22 @@
     { title: 'URL', sortable: false, key: 'URL' },
     { title: 'ACTIONS', sortable: false, key: 'ACTIONS' },
   ]);
-  const page = ref(1);
   const pageCount = ref(1);
-  const rows = ref(0);
-  const filter = ref('');
-  const filterType = ref(0);
 
   const onRefresh = async () => {
     // https://stackoverflow.com/questions/4228356/integer-division-with-remainder-in-javascript
-    await patternsService.value.getData(page.value, rows.value, filter.value, filterType.value);
-    pageCount.value = (patternsService.value.patternCount + rows.value - 1) / rows.value >> 0;
+    await patternsService.value.getData();
+    pageCount.value = (patternsService.value.patternCount + patternsService.value.rows - 1) / patternsService.value.rows >> 0;
   };
 
   (async () => {
     await appService.value.getData();
-    rows.value = settingsService.value.USROWSPERPAGE;
+    patternsService.value.rows = settingsService.value.USROWSPERPAGE;
     await onRefresh();
   })();
 
   const rowsChange = async (rows: number) => {
-    page.value = 1;
+    patternsService.value.page = 1;
     await onRefresh();
   };
 

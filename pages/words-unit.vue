@@ -1,20 +1,19 @@
 <template>
   <div>
     <v-toolbar>
-      <v-text-field label="New Word" type="text" v-model="newWord" @keyup.enter="onEnterNewWord" />
+      <v-text-field label="New Word" type="text" v-model="wordsUnitService.newWord" @keyup.enter="onEnterNewWord" />
       <v-tooltip text="Speak" location="top">
         <template v-slot:activator="{ props }">
-          <v-btn v-bind="props" icon="fa-volume-up" color="info" @click="settingsService.speak(newWord)" v-show="settingsService.selectedVoice"></v-btn>
+          <v-btn v-bind="props" icon="fa-volume-up" color="info" @click="settingsService.speak(wordsUnitService.newWord)" v-show="settingsService.selectedVoice"></v-btn>
         </template>
       </v-tooltip>
-      <v-select :items="settingsService.wordFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh" />
-      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh" />
+      <v-select :items="settingsService.wordFilterTypes" item-title="label" v-model="wordsUnitService.filterType" @update:modelValue="onRefresh" />
+      <v-text-field label="Filter" type="text" v-model="wordsUnitService.filter" @keyup.enter="onRefresh" />
       <v-btn variant="elevated" prepend-icon="fa-plus" color="info" @click.stop="showDetailDialog(0)">Add</v-btn>
       <v-btn variant="elevated" prepend-icon="fa-refresh" color="info" @click="onRefresh()">Refresh</v-btn>
-      <v-btn variant="elevated" v-show="settingsService.selectedDictNote" color="warning" @click="getNotes(false)">Get All Notes</v-btn>
-      <v-btn variant="elevated" v-show="settingsService.selectedDictNote" color="warning" @click="getNotes(true)">Get Notes If Empty</v-btn>
-      <v-btn variant="elevated" v-show="settingsService.selectedDictNote" color="warning" @click="clearNotes(false)">Clear All Notes</v-btn>
-      <v-btn variant="elevated" v-show="settingsService.selectedDictNote" color="warning" @click="clearNotes(true)">Clear Notes If Empty</v-btn>
+      <v-checkbox label="If Empty" v-model="wordsUnitService.ifEmpty"></v-checkbox>
+      <v-btn variant="elevated" v-show="settingsService.selectedDictNote" color="warning" @click="getNotes()">Get Notes</v-btn>
+      <v-btn variant="elevated" v-show="settingsService.selectedDictNote" color="warning" @click="clearNotes()">Clear Notes</v-btn>
 <!--      <router-link to="/words-dict/unit/0">-->
         <v-btn variant="elevated" prepend-icon="fa-book" color="info">Dictionary</v-btn>
 <!--      </router-link>-->
@@ -29,7 +28,7 @@
       item-key="ID"
     >
       <template v-slot:item.DD="{ item }">
-        <v-btn v-show="settingsService.isSingleUnitPart && !filter" style="cursor: move" icon="fa-bars" class="sortHandle"></v-btn>
+        <v-btn v-show="settingsService.isSingleUnitPart && !wordsUnitService.filter" style="cursor: move" icon="fa-bars" class="sortHandle"></v-btn>
       </template>
       <template v-slot:item.ACTIONS="{ item, index }">
         <v-tooltip text="Delete" location="top">
@@ -93,12 +92,9 @@
     { title: 'ACCURACY', sortable: false, key: 'ACCURACY' },
     { title: 'ACTIONS', sortable: false, key: 'ACTIONS' },
   ]);
-  const newWord = ref('');
-  const filter = ref('');
-  const filterType = ref(0);
 
   const onRefresh = async () => {
-    await wordsUnitService.value.getDataInTextbook(filter.value, filterType.value);
+    await wordsUnitService.value.getDataInTextbook();
   };
 
   (async () => {
@@ -145,13 +141,7 @@
   };
 
   const onEnterNewWord = async () => {
-    if (!newWord.value) return;
-    const o = wordsUnitService.value.newUnitWord();
-    o.WORD = settingsService.value.autoCorrectInput(newWord.value);
-    newWord.value = '';
-    const id = await wordsUnitService.value.create(o);
-    o.ID = id as number;
-    wordsUnitService.value.unitWords.push(o);
+    await wordsUnitService.value.createWithNewWord();
   };
 
   const deleteWord = async (item: MUnitWord) => {
@@ -170,11 +160,11 @@
     googleString(word);
   };
 
-  const getNotes = (ifEmpty: boolean) => {
+  const getNotes = () => {
     wordsUnitService.value.getNotes(ifEmpty, () => {}, () => {});
   };
 
-  const clearNotes = (ifEmpty: boolean) => {
+  const clearNotes = () => {
     wordsUnitService.value.clearNotes(ifEmpty, () => {}, () => {});
   };
 

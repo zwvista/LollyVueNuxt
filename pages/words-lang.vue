@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-toolbar>
-      <v-select :items="settingsService.wordFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh" />
-      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh" />
+      <v-select :items="settingsService.wordFilterTypes" item-title="label" v-model="wordsLangService.filterType" @update:modelValue="onRefresh" />
+      <v-text-field label="Filter" type="text" v-model="wordsLangService.filter" @keyup.enter="onRefresh" />
       <v-btn variant="elevated" prepend-icon="fa-plus" color="info" @click.stop="showDetailDialog(0)">Add</v-btn>
       <v-btn variant="elevated" prepend-icon="fa-refresh" color="info" @click="onRefresh()">Refresh</v-btn>
 <!--      <router-link to="/words-dict/lang/0">-->
@@ -14,14 +14,14 @@
         <v-col cols="12" md="3">
           <v-select
             :items="settingsService.USROWSPERPAGEOPTIONS"
-            v-model="rows"
+            v-model="wordsLangService.rows"
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
            />
         </v-col>
         <v-pagination
-          v-model="page"
+          v-model="wordsLangService.page"
           :length="pageCount"
           :total-visible="20"
           @update:modelValue="onRefresh"
@@ -79,14 +79,14 @@
         <v-col cols="12" md="3">
           <v-select
             :items="settingsService.USROWSPERPAGEOPTIONS"
-            v-model="rows"
+            v-model="wordsLangService.rows"
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
            />
         </v-col>
         <v-pagination
-          v-model="page"
+          v-model="wordsLangService.page"
           :length="pageCount"
           :total-visible="20"
           @update:modelValue="onRefresh"
@@ -111,26 +111,22 @@
     { title: 'ACCURACY', sortable: false, key: 'ACCURACY' },
     { title: 'ACTIONS', sortable: false, key: 'ACTIONS' },
   ]);
-  const page = ref(1);
   const pageCount = ref(1);
-  const rows = ref(0);
-  const filter = ref('');
-  const filterType = ref(0);
 
   const onRefresh = async () => {
     // https://stackoverflow.com/questions/4228356/integer-division-with-remainder-in-javascript
-    await wordsLangService.value.getData(page.value, rows.value, filter.value, filterType.value);
-    pageCount.value = (wordsLangService.value.langWordsCount + rows.value - 1) / rows.value >> 0;
+    await wordsLangService.value.getData();
+    pageCount.value = (wordsLangService.value.langWordsCount + wordsLangService.value.rows - 1) / wordsLangService.value.rows >> 0;
   };
 
   (async () => {
     await appService.value.getData();
-    rows.value = settingsService.value.USROWSPERPAGE;
+    wordsLangService.value.rows = settingsService.value.USROWSPERPAGE;
     await onRefresh();
   })();
 
   const rowsChange = async (rows: number) => {
-    page.value = 1;
+    wordsLangService.value.page = 1;
     await onRefresh();
   };
 
@@ -139,11 +135,11 @@
   };
 
   const getNote = async (item: MLangWord) => {
-    await wordsUnitService.value.getNote(item);
+    await wordsLangService.value.getNote(item);
   };
 
   const clearNote = async (item: MLangWord) => {
-    await wordsUnitService.value.clearNote(item);
+    await wordsLangService.value.clearNote(item);
   };
 
   const googleWord = (word: string) => {

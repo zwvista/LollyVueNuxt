@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-toolbar>
-      <v-select :items="settingsService.wordFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh" />
-      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh" />
-      <v-select :items="settingsService.textbookFilters" item-title="label" v-model="textbookFilter" @update:modelValue="onRefresh" />
+      <v-select :items="settingsService.wordFilterTypes" item-title="label" v-model="wordsUnitService.filterType" @update:modelValue="onRefresh" />
+      <v-text-field label="Filter" type="text" v-model="wordsUnitService.filter" @keyup.enter="onRefresh" />
+      <v-select :items="settingsService.textbookFilters" item-title="label" v-model="wordsUnitService.textbookFilter" @update:modelValue="onRefresh" />
       <v-btn variant="elevated" prepend-icon="fa-refresh" color="info">Refresh</v-btn>
 <!--      <router-link to="/words-dict/textbook/0">-->
         <v-btn variant="elevated" prepend-icon="fa-book" color="info" @click="onRefresh()">Dictionary</v-btn>
@@ -14,14 +14,14 @@
         <v-col cols="12" md="3">
           <v-select
             :items="settingsService.USROWSPERPAGEOPTIONS"
-            v-model="rows"
+            v-model="wordsUnitService.rows"
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
            />
         </v-col>
         <v-pagination
-          v-model="page"
+          v-model="wordsUnitService.page"
           :length="pageCount"
           :total-visible="20"
           @update:modelValue="onRefresh"
@@ -78,14 +78,14 @@
         <v-col cols="12" md="3">
           <v-select
             :items="settingsService.USROWSPERPAGEOPTIONS"
-            v-model="rows"
+            v-model="wordsUnitService.rows"
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
            />
         </v-col>
         <v-pagination
-          v-model="page"
+          v-model="wordsUnitService.page"
           :length="pageCount"
           :total-visible="20"
           @update:modelValue="onRefresh"
@@ -115,27 +115,22 @@
     { title: 'ACCURACY', sortable: false, key: 'ACCURACY' },
     { title: 'ACTIONS', sortable: false, key: 'ACTIONS' },
   ]);
-  const page = ref(1);
   const pageCount = ref(1);
-  const rows = ref(0);
-  const filter = ref('');
-  const filterType = ref(0);
-  const textbookFilter = ref(0);
 
   const onRefresh = async () => {
     // https://stackoverflow.com/questions/4228356/integer-division-with-remainder-in-javascript
-    await wordsUnitService.value.getDataInLang(page.value, rows.value, filter.value, filterType.value, textbookFilter.value);
-    pageCount.value = (wordsUnitService.value.textbookWordCount + rows.value - 1) / rows.value >> 0;
+    await wordsUnitService.value.getDataInLang();
+    pageCount.value = (wordsUnitService.value.textbookWordCount + wordsUnitService.value.rows - 1) / wordsUnitService.value.rows >> 0;
   };
 
   (async () => {
     await appService.value.getData();
-    rows.value = settingsService.value.USROWSPERPAGE;
+    wordsUnitService.value.rows = settingsService.value.USROWSPERPAGE;
     await onRefresh();
   })();
 
   const rowsChange = async (rows: number) => {
-    page.value = 1;
+    wordsUnitService.value.page = 1;
     await onRefresh();
   };
 

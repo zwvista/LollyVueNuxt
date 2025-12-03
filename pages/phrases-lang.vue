@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-toolbar>
-      <v-select :items="settingsService.phraseFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh" />
-      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh" />
+      <v-select :items="settingsService.phraseFilterTypes" item-title="label" v-model="phrasesLangService.filterType" @update:modelValue="onRefresh" />
+      <v-text-field label="Filter" type="text" v-model="phrasesLangService.filter" @keyup.enter="onRefresh" />
       <v-btn variant="elevated" prepend-icon="fa-plus" color="info" @click.stop="showDetailDialog(0)">Add</v-btn>
       <v-btn variant="elevated" prepend-icon="fa-refresh" color="info" @click="onRefresh()">Refresh</v-btn>
     </v-toolbar>
@@ -11,14 +11,14 @@
         <v-col cols="12" md="3">
           <v-select
             :items="settingsService.USROWSPERPAGEOPTIONS"
-            v-model="rows"
+            v-model="phrasesLangService.rows"
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
            />
         </v-col>
         <v-pagination
-          v-model="page"
+          v-model="phrasesLangService.page"
           :length="pageCount"
           :total-visible="20"
           @update:modelValue="onRefresh"
@@ -66,14 +66,14 @@
         <v-col cols="12" md="3">
           <v-select
             :items="settingsService.USROWSPERPAGEOPTIONS"
-            v-model="rows"
+            v-model="phrasesLangService.rows"
             label="Rows per page"
             style="width: 125px"
             @update:modelValue="rowsChange"
            />
         </v-col>
         <v-pagination
-          v-model="page"
+          v-model="phrasesLangService.page"
           :length="pageCount"
           :total-visible="20"
           @update:modelValue="onRefresh"
@@ -97,26 +97,22 @@
     { title: 'TRANSLATION', sortable: false, key: 'TRANSLATION' },
     { title: 'ACTIONS', sortable: false, key: 'ACTIONS' },
   ]);
-  const page = ref(1);
   const pageCount = ref(1);
-  const rows = ref(0);
-  const filter = ref('');
-  const filterType = ref(0);
 
   const onRefresh = async () => {
     // https://stackoverflow.com/questions/4228356/integer-division-with-remainder-in-javascript
-    await phrasesLangService.value.getData(page.value, rows.value, filter.value, filterType.value);
-    pageCount.value = (phrasesLangService.value.langPhraseCount + rows.value - 1) / rows.value >> 0;
+    await phrasesLangService.value.getData();
+    pageCount.value = (phrasesLangService.value.langPhraseCount + phrasesLangService.value.rows - 1) / phrasesLangService.value.rows >> 0;
   };
 
   (async () => {
     await appService.value.getData();
-    rows.value = settingsService.value.USROWSPERPAGE;
+    phrasesLangService.value.rows = settingsService.value.USROWSPERPAGE;
     await onRefresh();
   })();
 
   const rowsChange = async (rows: number) => {
-    page.value = 1;
+    phrasesLangService.value.page = 1;
     await onRefresh();
   };
 

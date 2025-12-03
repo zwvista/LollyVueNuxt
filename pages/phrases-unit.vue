@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-toolbar>
-      <v-select :items="settingsService.phraseFilterTypes" item-title="label" v-model="filterType" @update:modelValue="onRefresh" />
-      <v-text-field label="Filter" type="text" v-model="filter" @keyup.enter="onRefresh" />
+      <v-select :items="settingsService.phraseFilterTypes" item-title="label" v-model="phrasesUnitService.filterType" @update:modelValue="onRefresh" />
+      <v-text-field label="Filter" type="text" v-model="phrasesUnitService.filter" @keyup.enter="onRefresh" />
       <v-btn variant="elevated" prepend-icon="fa-plus" color="info" @click.stop="showDetailDialog(0)">Add</v-btn>
       <v-btn variant="elevated" prepend-icon="fa-refresh" color="info" @click="onRefresh()">Refresh</v-btn>
     </v-toolbar>
@@ -16,7 +16,7 @@
       item-key="ID"
     >
       <template v-slot:item.DD="{ item }">
-        <v-btn v-show="settingsService.isSingleUnitPart && !filter" style="cursor: move" icon class="sortHandle"><v-icon>fa-bars</v-icon></v-btn>
+        <v-btn v-show="settingsService.isSingleUnitPart && !phrasesUnitService.filter" style="cursor: move" icon class="sortHandle"><v-icon>fa-bars</v-icon></v-btn>
       </template>
       <template v-slot:item.ACTIONS="{ item, index }">
         <v-tooltip text="Delete" location="top">
@@ -72,11 +72,9 @@
     { title: 'TRANSLATION', sortable: false, key: 'TRANSLATION' },
     { title: 'ACTIONS', sortable: false, key: 'ACTIONS' },
   ]);
-  const filter = ref('');
-  const filterType = ref(0);
 
   const onRefresh = async () => {
-    await phrasesUnitService.value.getDataInTextbook(filter.value, filterType.value);
+    await phrasesUnitService.value.getDataInTextbook();
   };
 
   (async () => {

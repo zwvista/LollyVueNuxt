@@ -8,8 +8,10 @@ export default defineNuxtConfig({
   devServer: {
     port: 3600
   },
+
   devtools: { enabled: true },
   modules: ["vuetify-nuxt-module"],
+
   vuetify: {
     vuetifyOptions: {
       icons: {
@@ -26,13 +28,16 @@ export default defineNuxtConfig({
       }
     }
   },
+
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css'
   ],
+
   // https://vitejs.dev/config/
   vite: {
     plugins: [typescript()],
   },
+
   build: {
     transpile: [
       // https://stackoverflow.com/questions/76130373/nuxt3-how-to-use-rxjs-in-development-mode
@@ -41,6 +46,7 @@ export default defineNuxtConfig({
       '@fortawesome/vue-fontawesome'
     ]
   },
+
   imports: {
     dirs: ['shared/**'],
     presets: [
@@ -50,4 +56,6 @@ export default defineNuxtConfig({
       }
     ]
   },
+
+  compatibilityDate: '2025-12-03',
 })
