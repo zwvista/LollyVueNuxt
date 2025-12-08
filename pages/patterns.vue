@@ -109,7 +109,6 @@
 
   (async () => {
     await appService.value.getData();
-    patternsService.value.rows = settingsService.value.USROWSPERPAGE;
     await onRefresh();
   })();
 

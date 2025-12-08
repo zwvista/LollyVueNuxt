@@ -121,7 +121,6 @@
 
   (async () => {
     await appService.value.getData();
-    wordsLangService.value.rows = settingsService.value.USROWSPERPAGE;
     await onRefresh();
   })();
 
